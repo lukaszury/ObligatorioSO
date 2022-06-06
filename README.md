@@ -29,10 +29,4 @@ Se deberá justificar cada aspecto que el planificador tome en consideración pa
 
 Entregables: El presente trabajo deberá ser entregado conjuntamente con el 1) informe del análisis, 2) discusión, 3) documentación de la solución propuesta incluido un 4) pseudocódigo, y la 5) demostración que se lograron los resultados esperados, con las 6) conclusiones que le merezca. Los entregables deberán ser subidos a la webasignatura. 
 
-Reglas de colaboración: El obligatorio es en grupo de 3 personas, los integrantes son los responsables de la división del trabajo en forma equitativa. El trabajo debe ser original, producido enteramente por ustedes. La documentación teórica debe contener las referencias a las fuentes de donde tomó la información (con referencias en los párrafos correspondientes) y en caso de incluir texto literal de alguna fuente DEBEN ponerlo entre comillas. Debe poner referencias a cualquier fuente consultada, utilice la metodología propuesta en el documento “Presentación del Curso” y las normas APA, que se encuentra en el material del curso. 
 
-Entregas tardías: No se es posible entregar el obligatorio después de fecha. 
-
-Entregas por email: No se aceptarán entregas por email excepto que Web Asignatura no esté disponible seis horas antes a la fecha final de entrega. La entrega por email debe enviarse a todos los profesores y pedirles confirmación de entrega. Es su responsabilidad asegurarse que el trabajo haya sido recibido. 
-
-Valuación: La entrega será evaluada y se asignará una nota a cada uno de los estudiantes, pudiéndose tomar defensas orales y/o escritas en el caso que los profesores lo consideren necesario. 
