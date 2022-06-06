@@ -5,6 +5,8 @@
 
 package com.mycompany.obligatorioso;
 
+import com.mycompany.obligatorioso.UI.FrmSimulacion;
+
 /**
  *
  * @author lukas
@@ -12,6 +14,7 @@ package com.mycompany.obligatorioso;
 public class ObligatorioSO {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        FrmSimulacion frm = new FrmSimulacion();
+        frm.setVisible(true);
     }
 }
