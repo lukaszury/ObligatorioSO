@@ -4,6 +4,8 @@
  */
 package com.mycompany.obligatorioso.Modelo;
 
+import com.mycompany.obligatorioso.UI.FrmSimulacion;
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -15,13 +17,17 @@ public class CPU {
     private int quantum = 2;
     private Vector<Proceso> colaListos;
     private Vector<Proceso> colaBloqueados;
+    private Vector<Proceso> colaTerminados;
     private Proceso actual;
     private int indiceActual;
     private boolean procesando;
+    private ArrayList<FrmSimulacion> observers;
 
     public CPU() {
         colaListos = new Vector<>();
         colaBloqueados = new Vector<>();
+        colaTerminados = new Vector<>();
+        observers = new ArrayList<>();
         actual = null;
         indiceActual = 0;
         procesando = false;
@@ -29,7 +35,6 @@ public class CPU {
 
     public void procesar() {
         procesando = true;
-        Vector<Proceso> procesosListos = new Vector<>();
 
         System.out.println("Procesando");
 
@@ -38,24 +43,32 @@ public class CPU {
             while (!colaListos.isEmpty()) {
                 for (Proceso proceso : colaListos) {
                     actual = proceso;
-                    try {
-                        if (proceso.getRemainingBurstTime() > quantum) {
-                            Thread.sleep(1000 * quantum);
-                            proceso.setRemainingBurstTime(proceso.getRemainingBurstTime() - quantum);
-                            System.out.println(proceso.toString());
-                        } else {
-                            Thread.sleep(1000 * proceso.getRemainingBurstTime());
-                            proceso.setRemainingBurstTime(0);
-                            System.out.println(proceso.toString());
-                            procesosListos.add(proceso);
-                            System.out.println("Termino proceso: " + proceso.getNombre());
+                    if (proceso.getEstado() == Estado.Listo) {
+                        proceso.setEstado(Estado.Procesando);
+                        notifyObserver();
+                        try {
+                            if (proceso.getRemainingBurstTime() > quantum) {
+                                Thread.sleep(1000 * quantum);
+                                proceso.setRemainingBurstTime(proceso.getRemainingBurstTime() - quantum);
+                                System.out.println(proceso.toString());
+                                proceso.setEstado(Estado.Listo);
+                                notifyObserver();
+                            } else {
+                                Thread.sleep(1000 * proceso.getRemainingBurstTime());
+                                proceso.setRemainingBurstTime(0);
+                                System.out.println(proceso.toString());
+                                proceso.setEstado(Estado.Terminado);
+                                notifyObserver();
+                                colaTerminados.add(proceso);
+                                System.out.println("Termino proceso: " + proceso.getNombre());
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
                         }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
                     }
-                }
-                colaListos.removeAll(procesosListos);
 
+                }
+                colaListos.removeAll(colaTerminados);
             }
             procesando = false;
 
@@ -63,11 +76,29 @@ public class CPU {
         System.out.println("Termino");
 
     }
-
+    
+    public void addObserver(FrmSimulacion o){
+        this.observers.add(o);
+    }
+    
+    public void removeObserver(FrmSimulacion o){
+        this.observers.remove(o);
+    }
+    
+    private void notifyObserver(){
+        for (FrmSimulacion obs : observers) {
+            obs.update();
+        }
+    }
+    
     public void cargarProcesosCPU(Vector<Proceso> procesos) {
         for (Proceso proceso : procesos) {
             colaListos.add(proceso);
         }
+    }
+
+    public void agregarProceso(Proceso p) {
+        this.colaListos.add(p);
     }
 
     public Vector<Proceso> getColaListos() {
@@ -85,6 +116,16 @@ public class CPU {
     public void setColaBloqueados(Vector<Proceso> colaBloqueados) {
         this.colaBloqueados = colaBloqueados;
     }
+
+    public Vector<Proceso> getColaTerminados() {
+        return colaTerminados;
+    }
+
+    public void setColaTerminados(Vector<Proceso> colaTerminados) {
+        this.colaTerminados = colaTerminados;
+    }
+    
+    
 
     public void imprimirAllProcesos() {
         for (Proceso procesos : colaListos) {

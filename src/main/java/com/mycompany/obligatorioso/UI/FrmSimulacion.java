@@ -4,17 +4,26 @@
  */
 package com.mycompany.obligatorioso.UI;
 
+import com.mycompany.obligatorioso.Modelo.*;
+import java.util.Vector;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author lukas
  */
 public class FrmSimulacion extends javax.swing.JFrame {
 
+    CPU cpu;
+
     /**
      * Creates new form FrmSimulacion
      */
     public FrmSimulacion() {
         initComponents();
+        cpu = new CPU();
+        cpu.addObserver(this);
+        iniciarDatos();
     }
 
     /**
@@ -27,30 +36,107 @@ public class FrmSimulacion extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listProcesosTerminados = new javax.swing.JList<>();
+        jbtnCargarProcesos = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listProcesos = new javax.swing.JList<>();
+        txtProcesando = new javax.swing.JTextField();
+        btnProcesar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane1.setViewportView(listProcesosTerminados);
+
+        jbtnCargarProcesos.setText("Cargar procesos");
+        jbtnCargarProcesos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnCargarProcesosActionPerformed(evt);
+            }
+        });
+
+        jScrollPane2.setViewportView(listProcesos);
+
+        btnProcesar.setText("Procesar");
+        btnProcesar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcesarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(144, 144, 144)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(626, Short.MAX_VALUE))
+                .addGap(91, 91, 91)
+                .addComponent(jbtnCargarProcesos)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(322, 322, 322)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(89, 89, 89)
+                        .addComponent(btnProcesar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtProcesando, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(25, 25, 25)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(603, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(78, 78, 78)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(406, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(txtProcesando, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnProcesar))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbtnCargarProcesos)
+                .addContainerGap(9, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(39, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jbtnCargarProcesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCargarProcesosActionPerformed
+
+        DefaultListModel<Proceso> data = new DefaultListModel<Proceso>();
+        Vector<Proceso> cola = cpu.getColaListos();
+        for (Proceso p : cola) {
+            data.addElement(p);
+        }
+        listProcesos.setModel(data);
+    }//GEN-LAST:event_jbtnCargarProcesosActionPerformed
+
+    private void btnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcesarActionPerformed
+        cpu.procesar();
+    }//GEN-LAST:event_btnProcesarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -87,7 +173,44 @@ public class FrmSimulacion extends javax.swing.JFrame {
         });
     }
 
+    private void iniciarDatos() {
+        String[] procesos = ManejadorArchivosGenerico.leerArchivo("src\\main\\java\\com\\mycompany\\obligatorioso\\Modelo\\Procesos.txt");
+        for (String proceso : procesos) {
+            String[] datos = proceso.split(",");
+            Proceso p = new Proceso(datos[0], Integer.parseInt(datos[1]));
+            cpu.agregarProceso(p);
+        }
+    }
+
+    public void update() {
+        DefaultListModel<Proceso> data = new DefaultListModel<Proceso>();
+        DefaultListModel<Proceso> dataTerminados = new DefaultListModel<Proceso>();
+        Vector<Proceso> colaTerminados = cpu.getColaTerminados();
+        for (Proceso pTerminado : colaTerminados) {
+            dataTerminados.addElement(pTerminado);
+        }
+        Vector<Proceso> cola = cpu.getColaListos();
+        for (Proceso p : cola) {
+            if (p.getEstado() == Estado.Listo) {
+                data.addElement(p);
+            }
+            listProcesosTerminados.setModel(data);
+            if (p.getEstado() == Estado.Procesando) {
+                txtProcesando.setText(p.getNombre());
+            }
+        }
+        listProcesos.setModel(data);
+        listProcesosTerminados.setModel(dataTerminados);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnProcesar;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton jbtnCargarProcesos;
+    private javax.swing.JList<Proceso> listProcesos;
+    private javax.swing.JList<Proceso> listProcesosTerminados;
+    private javax.swing.JTextField txtProcesando;
     // End of variables declaration//GEN-END:variables
 }

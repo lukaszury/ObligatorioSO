@@ -12,13 +12,13 @@ public class Proceso {
     private String nombre;
     private int burstTime;
     private int remainingBurstTime;
-    private boolean activo;
+    private Estado estado;
 
     public Proceso(String nombre, int burstTime) {
         this.nombre = nombre;
         this.burstTime = burstTime;
         this.remainingBurstTime = burstTime;
-        this.activo = true;
+        this.estado = Estado.Listo;
     }
 
     public String getNombre() {
@@ -45,14 +45,14 @@ public class Proceso {
         this.remainingBurstTime = remainingBurstTime;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public Estado getEstado() {
+        return estado;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
-    
+
     
     public void imprimir(){
         System.out.println(nombre +  " " + burstTime);
@@ -60,7 +60,7 @@ public class Proceso {
 
     @Override
     public String toString() {
-        return "Procesando actualmente: " + nombre + " - Tiempo requerido = " + burstTime + " - Tiempo restante = " + remainingBurstTime;
+        return "Proceso: " + nombre + " - Tiempo requerido = " + burstTime;
     }
 
     

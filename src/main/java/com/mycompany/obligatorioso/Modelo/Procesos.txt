@@ -2,14 +2,3 @@ proceso1,4
 proceso2,7
 proceso3,2
 proceso4,4
-proceso5,12
-proceso6,2
-proceso7,4
-proceso8,1
-proceso9,2
-proceso10,6
-proceso11,11
-proceso12,2
-proceso13,4
-proceso14,8
-proceso15,2
