@@ -1,4 +1,4 @@
 proceso1,4
-proceso2,7
+proceso2,2
 proceso3,2
 proceso4,4

@@ -5,8 +5,10 @@
 package com.mycompany.obligatorioso.UI;
 
 import com.mycompany.obligatorioso.Modelo.*;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 
 /**
  *
@@ -22,8 +24,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
     public FrmSimulacion() {
         initComponents();
         cpu = new CPU();
-        cpu.addObserver(this);
-        iniciarDatos();
+
     }
 
     /**
@@ -36,33 +37,50 @@ public class FrmSimulacion extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        listProcesosTerminados = new javax.swing.JList<>();
-        jbtnCargarProcesos = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         listProcesos = new javax.swing.JList<>();
-        txtProcesando = new javax.swing.JTextField();
-        btnProcesar = new javax.swing.JButton();
+        txtNombre = new javax.swing.JTextField();
+        txtBurst = new javax.swing.JTextField();
+        txtTiempoOcurrenciaES = new javax.swing.JTextField();
+        txtBloqueadoES = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        btnCrearProceso = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtLog = new javax.swing.JTextArea();
+        btnEjecutar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jScrollPane1.setViewportView(listProcesosTerminados);
+        jScrollPane2.setViewportView(listProcesos);
 
-        jbtnCargarProcesos.setText("Cargar procesos");
-        jbtnCargarProcesos.addActionListener(new java.awt.event.ActionListener() {
+        jLabel1.setText("Nombre del proceso");
+
+        jLabel2.setText("Tiempo total de ejecucion");
+
+        jLabel3.setText("Tiempo cada cuanto realiza E/S");
+
+        jLabel4.setText("Tiempo bloqueado por E/S");
+
+        btnCrearProceso.setText("Crear Proceso");
+        btnCrearProceso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbtnCargarProcesosActionPerformed(evt);
+                btnCrearProcesoActionPerformed(evt);
             }
         });
 
-        jScrollPane2.setViewportView(listProcesos);
+        txtLog.setColumns(20);
+        txtLog.setRows(5);
+        jScrollPane1.setViewportView(txtLog);
 
-        btnProcesar.setText("Procesar");
-        btnProcesar.addActionListener(new java.awt.event.ActionListener() {
+        btnEjecutar.setText("Ejecutar");
+        btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProcesarActionPerformed(evt);
+                btnEjecutarActionPerformed(evt);
             }
         });
 
@@ -71,72 +89,93 @@ public class FrmSimulacion extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(jbtnCargarProcesos)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+                .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(322, 322, 322)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtNombre)
+                                .addGap(48, 48, 48))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtBurst, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(txtTiempoOcurrenciaES, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBloqueadoES, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(89, 89, 89)
-                        .addComponent(btnProcesar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtProcesando, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(25, 25, 25)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(603, Short.MAX_VALUE)))
+                        .addGap(125, 125, 125))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(109, 109, 109)
+                                .addComponent(btnCrearProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(216, 216, 216)
+                .addComponent(btnEjecutar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(txtProcesando, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(28, 28, 28)
+                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel3)
+                                .addGap(5, 5, 5)
+                                .addComponent(txtTiempoOcurrenciaES, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnProcesar))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbtnCargarProcesos)
-                .addContainerGap(9, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(16, 16, 16)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(39, Short.MAX_VALUE)))
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtBloqueadoES, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1)
+                                .addGap(42, 42, 42)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtBurst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(32, 32, 32)
+                        .addComponent(btnCrearProceso)
+                        .addGap(39, 39, 39)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(btnEjecutar)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jbtnCargarProcesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCargarProcesosActionPerformed
+    private void btnCrearProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearProcesoActionPerformed
+        Proceso p = crearProceso();
+        cpu.agregarProcesoAListo(p);
+        recargarUI();
+    }//GEN-LAST:event_btnCrearProcesoActionPerformed
 
-        DefaultListModel<Proceso> data = new DefaultListModel<Proceso>();
-        Vector<Proceso> cola = cpu.getColaListos();
-        for (Proceso p : cola) {
-            data.addElement(p);
-        }
-        listProcesos.setModel(data);
-    }//GEN-LAST:event_jbtnCargarProcesosActionPerformed
-
-    private void btnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcesarActionPerformed
+    private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEjecutarActionPerformed
         cpu.procesar();
-    }//GEN-LAST:event_btnProcesarActionPerformed
+        recargarUI();
+    }//GEN-LAST:event_btnEjecutarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -173,44 +212,45 @@ public class FrmSimulacion extends javax.swing.JFrame {
         });
     }
 
-    private void iniciarDatos() {
-        String[] procesos = ManejadorArchivosGenerico.leerArchivo("src\\main\\java\\com\\mycompany\\obligatorioso\\Modelo\\Procesos.txt");
-        for (String proceso : procesos) {
-            String[] datos = proceso.split(",");
-            Proceso p = new Proceso(datos[0], Integer.parseInt(datos[1]));
-            cpu.agregarProceso(p);
-        }
-    }
-
-    public void update() {
-        DefaultListModel<Proceso> data = new DefaultListModel<Proceso>();
-        DefaultListModel<Proceso> dataTerminados = new DefaultListModel<Proceso>();
-        Vector<Proceso> colaTerminados = cpu.getColaTerminados();
-        for (Proceso pTerminado : colaTerminados) {
-            dataTerminados.addElement(pTerminado);
-        }
-        Vector<Proceso> cola = cpu.getColaListos();
-        for (Proceso p : cola) {
-            if (p.getEstado() == Estado.Listo) {
-                data.addElement(p);
-            }
-            listProcesosTerminados.setModel(data);
-            if (p.getEstado() == Estado.Procesando) {
-                txtProcesando.setText(p.getNombre());
-            }
-        }
-        listProcesos.setModel(data);
-        listProcesosTerminados.setModel(dataTerminados);
-    }
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnProcesar;
+    private javax.swing.JButton btnCrearProceso;
+    private javax.swing.JButton btnEjecutar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JButton jbtnCargarProcesos;
     private javax.swing.JList<Proceso> listProcesos;
-    private javax.swing.JList<Proceso> listProcesosTerminados;
-    private javax.swing.JTextField txtProcesando;
+    private javax.swing.JTextField txtBloqueadoES;
+    private javax.swing.JTextField txtBurst;
+    private javax.swing.JTextArea txtLog;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtTiempoOcurrenciaES;
     // End of variables declaration//GEN-END:variables
+
+    private Proceso crearProceso() {
+        String nombre = txtNombre.getText();
+        String burst = txtBurst.getText().replaceAll(" ", "");
+        String ocurrencia = txtTiempoOcurrenciaES.getText().replaceAll(" ", "");
+        String bloqueadoES = txtBloqueadoES.getText().replaceAll(" ", "");
+        Proceso p = new Proceso(nombre, Integer.parseInt(burst),Integer.parseInt(ocurrencia), Integer.parseInt(bloqueadoES));
+        return p;
+    }
+
+    private void recargarUI() {
+        listProcesos.setModel(parseToListModel(cpu.getColaListos()));
+        txtLog.setText(cpu.getPasos());
+    }
+
+    private ListModel<Proceso> parseToListModel(ArrayList<Proceso> colaListos) {
+        DefaultListModel modelo = new DefaultListModel();
+        for (Proceso p : colaListos) {
+            modelo.addElement(p);
+        }
+        return modelo;
+    }
 }
