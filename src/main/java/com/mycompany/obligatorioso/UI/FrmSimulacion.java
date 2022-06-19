@@ -51,6 +51,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
         btnEjecutar = new javax.swing.JButton();
+        bjbtnLimpiar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -81,6 +82,13 @@ public class FrmSimulacion extends javax.swing.JFrame {
         btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEjecutarActionPerformed(evt);
+            }
+        });
+
+        bjbtnLimpiar.setText("Limpiar");
+        bjbtnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bjbtnLimpiarActionPerformed(evt);
             }
         });
 
@@ -122,7 +130,9 @@ public class FrmSimulacion extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(216, 216, 216)
                 .addComponent(btnEjecutar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bjbtnLimpiar)
+                .addGap(220, 220, 220))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,7 +169,9 @@ public class FrmSimulacion extends javax.swing.JFrame {
                         .addGap(39, 39, 39)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(btnEjecutar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEjecutar)
+                    .addComponent(bjbtnLimpiar))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -176,6 +188,11 @@ public class FrmSimulacion extends javax.swing.JFrame {
         cpu.procesar();
         recargarUI();
     }//GEN-LAST:event_btnEjecutarActionPerformed
+
+    private void bjbtnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bjbtnLimpiarActionPerformed
+        cpu.setPasos(new StringBuilder());
+        recargarUI();
+    }//GEN-LAST:event_bjbtnLimpiarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -215,6 +232,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bjbtnLimpiar;
     private javax.swing.JButton btnCrearProceso;
     private javax.swing.JButton btnEjecutar;
     private javax.swing.JLabel jLabel1;

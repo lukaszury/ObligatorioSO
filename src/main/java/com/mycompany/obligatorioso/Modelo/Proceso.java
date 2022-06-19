@@ -19,6 +19,7 @@ public class Proceso implements Comparable<Proceso>{
     private int realizaES;
     private int desbloqueadES;
     private int tiempoRestantebloqueado;
+    private boolean primerbloqueo;
 
     public Proceso(String nombre, int burst, int realizaES, int desbloqueadES) {
         this.nombre = nombre;
@@ -26,8 +27,10 @@ public class Proceso implements Comparable<Proceso>{
         this.burstRestante = burst;
         this.realizaES = realizaES;
         this.desbloqueadES = desbloqueadES;
+        this.tiempoRestantebloqueado = desbloqueadES;
         this.PID = PIDanterior++;
         this.estado = Estado.Listo;
+        primerbloqueo = true;
         
     }
 
@@ -102,9 +105,15 @@ public class Proceso implements Comparable<Proceso>{
     public void setTiempoRestantebloqueado(int tiempoRestantebloqueado) {
         this.tiempoRestantebloqueado = tiempoRestantebloqueado;
     }
-    
-    
 
+    public boolean isPrimerbloqueo() {
+        return primerbloqueo;
+    }
+
+    public void setPrimerbloqueo(boolean primerbloqueo) {
+        this.primerbloqueo = primerbloqueo;
+    }
+    
     @Override
     public String toString() {
         return "Proceso = " + nombre + " - PID = " + PID + " Tiempo de ejecucion " + burst +" - estado = " + estado + " - E/S cada = " + realizaES + " - Tiempo bloqueado = " + desbloqueadES;
