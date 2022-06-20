@@ -4,11 +4,9 @@
  */
 package com.mycompany.obligatorioso.Modelo;
 
-import com.mycompany.obligatorioso.UI.FrmSimulacion;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Vector;
+
+
 
 /**
  *
@@ -24,17 +22,17 @@ public class CPU {
     private StringBuilder pasos;
     private int tiempoProcesado;
 
-    public CPU() {
+    public CPU(int quantum) {
         colaListos = new ArrayList<>();
         colaBloqueados = new ArrayList<>();
         colaTerminados = new ArrayList<>();
-        quantum = 2;
+        this.quantum = quantum;
         pasos = new StringBuilder();
     }
 
     public void procesar() {
         ArrayList<Proceso> aux = new ArrayList<>();
-        pasos.append("Se comenzo a procesar procesos\n");
+        pasos.append("Se comenzo a procesar\n");
         while (!colaListos.isEmpty() || !colaBloqueados.isEmpty()) {
             for (Proceso p : colaListos) {
                 if (p.getEstado() == Estado.Listo) {
@@ -46,7 +44,7 @@ public class CPU {
                                 tiempoProcesado = p.getRealizaES() - quantum;
                                 p.setBurstRestante(p.getBurstRestante() - tiempoProcesado);
                             } else {
-                                tiempoProcesado =  p.getRealizaES();
+                                tiempoProcesado = p.getRealizaES();
                                 p.setBurstRestante(p.getBurstRestante() - tiempoProcesado);
                             }
                             p.setEstado(Estado.Bloqueado);
@@ -56,6 +54,7 @@ public class CPU {
                             loggearBloqueado(p);
 
                         } else {
+                            tiempoProcesado = quantum;
                             p.setTimepoProcesado(p.getTimepoProcesado() + quantum);
                             logguear(p);
                             p.setBurstRestante(p.getBurstRestante() - quantum);
@@ -71,7 +70,7 @@ public class CPU {
                                 tiempoProcesado = p.getRealizaES() - quantum;
                                 p.setBurstRestante(tiempoProcesado);
                             } else {
-                                tiempoProcesado =  p.getRealizaES();
+                                tiempoProcesado = p.getRealizaES();
                                 p.setBurstRestante(tiempoProcesado);
                             }
                         }
@@ -81,30 +80,19 @@ public class CPU {
                         colaTerminados.add(p);
                     }
                 }
-//                for (Proceso pb : colaBloqueados) {
-//                    pb.setTiempoRestantebloqueado(pb.getTiempoRestantebloqueado() - quantum);
-//                    if (pb.getTiempoRestantebloqueado() <= 0) {
-//                        if (!pb.isPrimerbloqueo()) {
-//                            pb.setEstado(Estado.Listo);
-//                            pb.setTiempoRestantebloqueado(pb.getDesbloqueadES());
-//                            loogearDesbloqueo(pb);
-//                            aux.add(pb);
-//                        }
-//                        pb.setPrimerbloqueo(false);
-//                    }
-//                }
                 for (Proceso pb : colaListos) {
                     if (pb.getEstado() == Estado.Bloqueado) {
-                        pb.setTiempoRestantebloqueado(pb.getTiempoRestantebloqueado() - tiempoProcesado);
-                        if (pb.getTiempoRestantebloqueado() <= 0) {
-                            if (!pb.isPrimerbloqueo()) {
+                        if (!pb.isPrimerbloqueo()) {
+                            pb.setTiempoRestantebloqueado(pb.getTiempoRestantebloqueado() - tiempoProcesado);
+                            if (pb.getTiempoRestantebloqueado() <= 0) {
+
                                 pb.setEstado(Estado.Listo);
                                 pb.setTiempoRestantebloqueado(pb.getDesbloqueadES());
                                 loogearDesbloqueo(pb);
                                 aux.add(pb);
                             }
-                            pb.setPrimerbloqueo(false);
                         }
+                        pb.setPrimerbloqueo(false);
                     }
                     colaBloqueados.removeAll(aux);
                 }
@@ -163,18 +151,22 @@ public class CPU {
     }
 
     private void logguear(Proceso p) {
-        if (p.getEstado() == Estado.Procesando) {
-            pasos.append("Se comenzo a procesar " + p.getNombre() + " con un tiempo total de " + p.getBurst() + "\n");
+        if (p.getEstado() == Estado.Procesando || p.getEstado() == Estado.Bloqueado) {
+            pasos.append("Se comenzo a procesar " + p.getNombre() + " por " + tiempoProcesado + " - Tiempo para finalizar " + p.getBurstRestante() + "\n");
         } else {
-            pasos.append("Se termino de procesar " + p.getNombre() + " y se marco como " + p.getEstado() + " remain " + p.getBurstRestante() + "\n");
+            pasos.append("Se termino de procesar " + p.getNombre() + " y se marco como " + p.getEstado() + " Le quedan " + p.getBurstRestante() + " para terminar \n");
         }
     }
 
     private void loogearDesbloqueo(Proceso pb) {
-        pasos.append("Se desbloqueo" + pb.getNombre() + "remain" + pb.getBurstRestante() +"\n");
+        pasos.append("Se desbloqueo " + pb.getNombre() + " - Tiempo restante para terminar proceso: " + pb.getBurstRestante() + "\n");
     }
 
     private void loggearBloqueado(Proceso p) {
-        pasos.append("Se bloqueo" + p.getNombre() + "\n");
+        pasos.append("Se bloqueo " + p.getNombre() + "\n");
+    }
+
+    public void cargarProcesosCPU(ArrayList<Proceso> procesosAgregar) {
+        colaListos.addAll(procesosAgregar);
     }
 }

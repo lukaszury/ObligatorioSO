@@ -1,4 +1,3 @@
-proceso1,4
-proceso2,2
-proceso3,2
-proceso4,4
+proceso 2,4,3,3
+proceso 3,3,2,2
+proceso 4,5,1,2

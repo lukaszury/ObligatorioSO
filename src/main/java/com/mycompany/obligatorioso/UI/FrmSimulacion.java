@@ -23,7 +23,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
      */
     public FrmSimulacion() {
         initComponents();
-        cpu = new CPU();
+        cpu = new CPU(2);
 
     }
 
@@ -52,6 +52,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
         txtLog = new javax.swing.JTextArea();
         btnEjecutar = new javax.swing.JButton();
         bjbtnLimpiar = new javax.swing.JButton();
+        btnCargarProcesos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,6 +93,13 @@ public class FrmSimulacion extends javax.swing.JFrame {
             }
         });
 
+        btnCargarProcesos.setText("Cargar Procesos");
+        btnCargarProcesos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCargarProcesosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,7 +117,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
                                     .addComponent(txtBurst, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2)
                                     .addComponent(jLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
@@ -117,15 +125,17 @@ public class FrmSimulacion extends javax.swing.JFrame {
                             .addComponent(txtBloqueadoES, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(125, 125, 125))
+                        .addGap(51, 51, 51))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(109, 109, 109)
-                                .addComponent(btnCrearProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnCrearProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCargarProcesos, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(90, 90, 90)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
             .addGroup(layout.createSequentialGroup()
                 .addGap(216, 216, 216)
@@ -164,9 +174,11 @@ public class FrmSimulacion extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtBurst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(32, 32, 32)
-                        .addComponent(btnCrearProceso)
-                        .addGap(39, 39, 39)
+                        .addGap(31, 31, 31)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCrearProceso)
+                            .addComponent(btnCargarProcesos))
+                        .addGap(40, 40, 40)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -193,6 +205,18 @@ public class FrmSimulacion extends javax.swing.JFrame {
         cpu.setPasos(new StringBuilder());
         recargarUI();
     }//GEN-LAST:event_bjbtnLimpiarActionPerformed
+
+    private void btnCargarProcesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarProcesosActionPerformed
+        ArrayList<Proceso> procesosAgregar = new ArrayList<>();
+        String[] procesos = ManejadorArchivosGenerico.leerArchivo("src\\main\\java\\com\\mycompany\\obligatorioso\\Modelo\\Procesos.txt");
+        for (String proceso : procesos) {
+            String[] datos = proceso.split(",");
+            Proceso p = new Proceso(datos[0],Integer.parseInt(datos[1]),Integer.parseInt(datos[2]),Integer.parseInt(datos[3]));
+            procesosAgregar.add(p);
+        }
+        cpu.cargarProcesosCPU(procesosAgregar);
+        recargarUI();
+    }//GEN-LAST:event_btnCargarProcesosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,6 +257,7 @@ public class FrmSimulacion extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bjbtnLimpiar;
+    private javax.swing.JButton btnCargarProcesos;
     private javax.swing.JButton btnCrearProceso;
     private javax.swing.JButton btnEjecutar;
     private javax.swing.JLabel jLabel1;
