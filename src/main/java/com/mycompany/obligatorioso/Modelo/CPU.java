@@ -4,7 +4,9 @@
  */
 package com.mycompany.obligatorioso.Modelo;
 
-import java.util.Vector;
+import java.util.ArrayList;
+
+
 
 /**
  *
@@ -12,84 +14,159 @@ import java.util.Vector;
  */
 public class CPU {
 
-    private int quantum = 2;
-    private Vector<Proceso> colaListos;
-    private Vector<Proceso> colaBloqueados;
-    private Proceso actual;
-    private int indiceActual;
-    private boolean procesando;
+    private int quantum;
+    private ArrayList<Proceso> colaListos;
+    private ArrayList<Proceso> colaBloqueados;
+    private ArrayList<Proceso> colaTerminados;
+    private Proceso procesoEnCPU;
+    private StringBuilder pasos;
+    private int tiempoProcesado;
 
-    public CPU() {
-        colaListos = new Vector<>();
-        colaBloqueados = new Vector<>();
-        actual = null;
-        indiceActual = 0;
-        procesando = false;
+    public CPU(int quantum) {
+        colaListos = new ArrayList<>();
+        colaBloqueados = new ArrayList<>();
+        colaTerminados = new ArrayList<>();
+        this.quantum = quantum;
+        pasos = new StringBuilder();
     }
 
     public void procesar() {
-        procesando = true;
-        Vector<Proceso> procesosListos = new Vector<>();
+        ArrayList<Proceso> aux = new ArrayList<>();
+        pasos.append("Se comenzo a procesar\n");
+        while (!colaListos.isEmpty() || !colaBloqueados.isEmpty()) {
+            for (Proceso p : colaListos) {
+                if (p.getEstado() == Estado.Listo) {
+                    if (p.getBurstRestante() >= quantum) {
+                        p.setEstado(Estado.Procesando);
+                        if ((p.getTimepoProcesado() + quantum) >= p.getRealizaES()) {
+                            p.setTimepoProcesado(0);
+                            if (p.getRealizaES() - quantum > 0) {
+                                tiempoProcesado = p.getRealizaES() - quantum;
+                                p.setBurstRestante(p.getBurstRestante() - tiempoProcesado);
+                            } else {
+                                tiempoProcesado = p.getRealizaES();
+                                p.setBurstRestante(p.getBurstRestante() - tiempoProcesado);
+                            }
+                            p.setEstado(Estado.Bloqueado);
+                            p.setPrimerbloqueo(true);
+                            colaBloqueados.add(p);
+                            logguear(p);
+                            loggearBloqueado(p);
 
-        System.out.println("Procesando");
-
-        while (procesando) {
-
-            while (!colaListos.isEmpty()) {
-                for (Proceso proceso : colaListos) {
-                    actual = proceso;
-                    try {
-                        if (proceso.getRemainingBurstTime() > quantum) {
-                            Thread.sleep(1000 * quantum);
-                            proceso.setRemainingBurstTime(proceso.getRemainingBurstTime() - quantum);
-                            System.out.println(proceso.toString());
                         } else {
-                            Thread.sleep(1000 * proceso.getRemainingBurstTime());
-                            proceso.setRemainingBurstTime(0);
-                            System.out.println(proceso.toString());
-                            procesosListos.add(proceso);
-                            System.out.println("Termino proceso: " + proceso.getNombre());
+                            tiempoProcesado = quantum;
+                            p.setTimepoProcesado(p.getTimepoProcesado() + quantum);
+                            logguear(p);
+                            p.setBurstRestante(p.getBurstRestante() - quantum);
+                            p.setEstado(Estado.Listo);
+                            logguear(p);
                         }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+
+                    } else {
+                        p.setEstado(Estado.Procesando);
+                        logguear(p);
+                        if ((p.getTimepoProcesado() + quantum) >= p.getRealizaES()) {
+                            if (p.getRealizaES() - quantum > 0) {
+                                tiempoProcesado = p.getRealizaES() - quantum;
+                                p.setBurstRestante(tiempoProcesado);
+                            } else {
+                                tiempoProcesado = p.getRealizaES();
+                                p.setBurstRestante(tiempoProcesado);
+                            }
+                        }
+                        p.setBurstRestante(0);
+                        p.setEstado(Estado.Terminado);
+                        logguear(p);
+                        colaTerminados.add(p);
                     }
                 }
-                colaListos.removeAll(procesosListos);
+                for (Proceso pb : colaListos) {
+                    if (pb.getEstado() == Estado.Bloqueado) {
+                        if (!pb.isPrimerbloqueo()) {
+                            pb.setTiempoRestantebloqueado(pb.getTiempoRestantebloqueado() - tiempoProcesado);
+                            if (pb.getTiempoRestantebloqueado() <= 0) {
+
+                                pb.setEstado(Estado.Listo);
+                                pb.setTiempoRestantebloqueado(pb.getDesbloqueadES());
+                                loogearDesbloqueo(pb);
+                                aux.add(pb);
+                            }
+                        }
+                        pb.setPrimerbloqueo(false);
+                    }
+                    colaBloqueados.removeAll(aux);
+                }
 
             }
-            procesando = false;
-
+            colaListos.removeAll(colaTerminados);
+//            colaListos.addAll(aux);
+            aux.clear();
+//            colaListos.removeAll(colaBloqueados);
         }
-        System.out.println("Termino");
-
+        pasos.append("Finalizo el procesado\n");
     }
 
-    public void cargarProcesosCPU(Vector<Proceso> procesos) {
-        for (Proceso proceso : procesos) {
-            colaListos.add(proceso);
-        }
+    public void agregarProcesoAListo(Proceso p) {
+        this.colaListos.add(p);
     }
 
-    public Vector<Proceso> getColaListos() {
+    public ArrayList<Proceso> getColaListos() {
         return colaListos;
     }
 
-    public void setColaListos(Vector<Proceso> colaListos) {
+    public void setColaListos(ArrayList<Proceso> colaListos) {
         this.colaListos = colaListos;
     }
 
-    public Vector<Proceso> getColaBloqueados() {
+    public ArrayList<Proceso> getColaBloqueados() {
         return colaBloqueados;
     }
 
-    public void setColaBloqueados(Vector<Proceso> colaBloqueados) {
+    public void setColaBloqueados(ArrayList<Proceso> colaBloqueados) {
         this.colaBloqueados = colaBloqueados;
     }
 
-    public void imprimirAllProcesos() {
-        for (Proceso procesos : colaListos) {
-            System.out.println(procesos.toString());
+    public ArrayList<Proceso> getColaTerminados() {
+        return colaTerminados;
+    }
+
+    public void setColaTerminados(ArrayList<Proceso> colaTerminados) {
+        this.colaTerminados = colaTerminados;
+    }
+
+    public Proceso getProcesoEnCPU() {
+        return procesoEnCPU;
+    }
+
+    public void setProcesoEnCPU(Proceso procesoEnCPU) {
+        this.procesoEnCPU = procesoEnCPU;
+    }
+
+    public String getPasos() {
+        return pasos.toString();
+    }
+
+    public void setPasos(StringBuilder pasos) {
+        this.pasos = pasos;
+    }
+
+    private void logguear(Proceso p) {
+        if (p.getEstado() == Estado.Procesando || p.getEstado() == Estado.Bloqueado) {
+            pasos.append("Se comenzo a procesar " + p.getNombre() + " por " + tiempoProcesado + " - Tiempo para finalizar " + p.getBurstRestante() + "\n");
+        } else {
+            pasos.append("Se termino de procesar " + p.getNombre() + " y se marco como " + p.getEstado() + " Le quedan " + p.getBurstRestante() + " para terminar \n");
         }
     }
 
+    private void loogearDesbloqueo(Proceso pb) {
+        pasos.append("Se desbloqueo " + pb.getNombre() + " - Tiempo restante para terminar proceso: " + pb.getBurstRestante() + "\n");
+    }
+
+    private void loggearBloqueado(Proceso p) {
+        pasos.append("Se bloqueo " + p.getNombre() + "\n");
+    }
+
+    public void cargarProcesosCPU(ArrayList<Proceso> procesosAgregar) {
+        colaListos.addAll(procesosAgregar);
+    }
 }

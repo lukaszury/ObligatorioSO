@@ -8,17 +8,30 @@ package com.mycompany.obligatorioso.Modelo;
  *
  * @author lukas
  */
-public class Proceso {
+public class Proceso implements Comparable<Proceso>{
     private String nombre;
-    private int burstTime;
-    private int remainingBurstTime;
-    private boolean activo;
+    private static int PIDanterior;
+    private int burst;
+    private int burstRestante;
+    private int timepoProcesado;
+    private int PID;
+    private Estado estado;
+    private int realizaES;
+    private int desbloqueadES;
+    private int tiempoRestantebloqueado;
+    private boolean primerbloqueo;
 
-    public Proceso(String nombre, int burstTime) {
+    public Proceso(String nombre, int burst, int realizaES, int desbloqueadES) {
         this.nombre = nombre;
-        this.burstTime = burstTime;
-        this.remainingBurstTime = burstTime;
-        this.activo = true;
+        this.burst = burst;
+        this.burstRestante = burst;
+        this.realizaES = realizaES;
+        this.desbloqueadES = desbloqueadES;
+        this.tiempoRestantebloqueado = desbloqueadES;
+        this.PID = PIDanterior++;
+        this.estado = Estado.Listo;
+        primerbloqueo = true;
+        
     }
 
     public String getNombre() {
@@ -29,39 +42,86 @@ public class Proceso {
         this.nombre = nombre;
     }
 
-    public int getBurstTime() {
-        return burstTime;
+    public int getPID() {
+        return PID;
     }
 
-    public void setBurstTime(int burstTime) {
-        this.burstTime = burstTime;
+    public void setPID(int PID) {
+        this.PID = PID;
     }
 
-    public int getRemainingBurstTime() {
-        return remainingBurstTime;
+    public Estado getEstado() {
+        return estado;
     }
 
-    public void setRemainingBurstTime(int remainingBurstTime) {
-        this.remainingBurstTime = remainingBurstTime;
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public int getRealizaES() {
+        return realizaES;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setRealizaES(int realizaES) {
+        this.realizaES = realizaES;
+    }
+
+    public int getDesbloqueadES() {
+        return desbloqueadES;
+    }
+
+    public void setDesbloqueadES(int desbloqueadES) {
+        this.desbloqueadES = desbloqueadES;
+    }
+
+    public int getBurst() {
+        return burst;
+    }
+
+    public void setBurst(int burst) {
+        this.burst = burst;
+    }
+
+    public int getTimepoProcesado() {
+        return timepoProcesado;
+    }
+
+    public void setTimepoProcesado(int timepoProcesado) {
+        this.timepoProcesado = timepoProcesado;
+    }
+
+    public int getBurstRestante() {
+        return burstRestante;
+    }
+
+    public void setBurstRestante(int burstRestante) {
+        this.burstRestante = burstRestante;
+    }
+
+    public int getTiempoRestantebloqueado() {
+        return tiempoRestantebloqueado;
+    }
+
+    public void setTiempoRestantebloqueado(int tiempoRestantebloqueado) {
+        this.tiempoRestantebloqueado = tiempoRestantebloqueado;
+    }
+
+    public boolean isPrimerbloqueo() {
+        return primerbloqueo;
+    }
+
+    public void setPrimerbloqueo(boolean primerbloqueo) {
+        this.primerbloqueo = primerbloqueo;
     }
     
-    
-    public void imprimir(){
-        System.out.println(nombre +  " " + burstTime);
+    @Override
+    public String toString() {
+        return "Proceso = " + nombre + " - PID = " + PID + " Tiempo de ejecucion " + burst +" - estado = " + estado + " - E/S cada = " + realizaES + " - Tiempo bloqueado = " + desbloqueadES;
     }
 
     @Override
-    public String toString() {
-        return "Procesando actualmente: " + nombre + " - Tiempo requerido = " + burstTime + " - Tiempo restante = " + remainingBurstTime;
+    public int compareTo(Proceso p) {
+        return this.tiempoRestantebloqueado - p.getTiempoRestantebloqueado();
     }
 
-    
 }
